@@ -6,6 +6,8 @@ from .fedbase import BaseFedarated
 from flearn.utils.tf_utils import process_grad, cosine_sim, softmax, norm_grad
 from flearn.utils.model_utils import batch_data, gen_batch, gen_epoch
 
+from openpyxl import Workbook
+import os
 
 class Server(BaseFedarated):
     def __init__(self, params, learner, dataset):
@@ -65,6 +67,21 @@ class Server(BaseFedarated):
 
             # aggregate using the dynamic step-size
             self.latest_model = self.aggregate2(weights_before, Deltas, hs)
+
+        bootstrap_content = []
+        for i in range(self.num_bootstrap):
+            accs = self.bootstrap()
+            bootstrap_content.append(accs)
+            tqdm.write(f"Bootstrap round: {i}")
+        if len(bootstrap_content) != 0:
+            wb = Workbook()
+            ws = wb.active
+            ws.append([f"client_{i}" for i in range(len(bootstrap_content[0]))])
+            for accs in bootstrap_content:
+                ws.append(accs)
+            save_path = os.path.join("bootstrap", self.bootstrap_file)
+            os.makedirs("bootstrap", exist_ok=True) 
+            wb.save(save_path)
 
                     
 

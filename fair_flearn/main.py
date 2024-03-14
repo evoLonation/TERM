@@ -109,7 +109,14 @@ def read_options():
                     help='tilt parameter',
                     type=float,
                     default=0.1)
-
+    parser.add_argument('--num_bootstrap', 
+                        help='number of bootstrap',
+                        type=int,
+                        default=0)
+    parser.add_argument('--bootstrap_file', 
+                        help='file of bootstrap',
+                        type=str,
+                        default='bootstrap.xlsx')
 
     try: parsed = vars(parser.parse_args())
     except IOError as msg: parser.error(str(msg))
