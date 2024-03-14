@@ -83,6 +83,14 @@ class BaseFedarated(object):
             tot_correct.append(ct * 1.0)
             num_samples.append(ns)
         return num_samples, tot_correct
+    
+    def bootstrap(self):
+        accs = []
+        for c in self.clients:
+            ct, ns = c.bootstrap()
+            accuracy = ct*1.0/ns
+            accs.append(accuracy)
+        return accs
 
     def validate(self):
         '''tests self.latest_model on given clients

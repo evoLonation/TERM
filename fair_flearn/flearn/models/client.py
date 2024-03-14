@@ -107,6 +107,16 @@ class Client(object):
         '''
         tot_correct, loss = self.model.test(self.test_data)
         return tot_correct, self.test_samples
+    
+    def bootstrap(self):
+        bootstrap_indices = np.random.choice(a = self.test_samples, size= self.test_samples, replace=True)
+        bootstrap_test_data = {
+            'x': [self.test_data['x'][i] for i in bootstrap_indices],
+            'y': [self.test_data['y'][i] for i in bootstrap_indices],
+        }
+        assert len(bootstrap_test_data['x']) == self.test_samples
+        tot_correct, loss = self.model.test(bootstrap_test_data)
+        return tot_correct, self.test_samples
 
     def validate(self):
         tot_correct, loss = self.model.test(self.val_data)
